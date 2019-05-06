@@ -1,0 +1,76 @@
+[DEFAULT]
+my_ip=<%= scope['nova_controller_myip'] %>
+use_neutron=true
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+enabled_apis=osapi_compute,metadata
+transport_url = rabbit://openstack:PWDGOP@controller
+
+[api]
+auth_strategy=keystone
+
+[api_database]
+connection=mysql+pymysql://nova:PWDGOP@controller/nova_api
+
+[cinder]
+os_region_name = RegionOne
+
+[database]
+connection=mysql+pymysql://nova:PWDGOP@controller/nova
+
+[glance]
+api_servers=http://controller:9292
+
+[keystone_authtoken]
+auth_url = http://controller:5000/v3
+memcached_servers = controller:11211
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = PWDGOP
+
+[libvirt]
+virt_type=kvm
+
+[neutron]
+url = http://network:9696
+auth_url = http://controller:35357
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = RegionOne
+project_name = service
+username = neutron
+password = PWDGOP
+service_metadata_proxy = true
+metadata_proxy_shared_secret = PWDGOP
+
+#[notifications]
+#notify_on_state_change=vm_and_task_state
+#notification_driver = messagingv2
+#notification_driver = ceilometer.compute.nova_notifier
+
+[oslo_concurrency]
+lock_path=/var/lib/nova/tmp
+
+#[oslo_messaging_notifications]
+#driver = messagingv2
+
+[placement]
+os_region_name = RegionOne
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://controller:5000/v3
+username = placement
+password = PWDGOP
+
+[scheduler]
+discover_hosts_in_cells_interval=30000
+
+[vnc]
+enabled=true
+server_listen=$my_ip
+server_proxyclient_address=$my_ip

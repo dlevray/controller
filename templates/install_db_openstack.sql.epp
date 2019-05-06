@@ -1,0 +1,57 @@
+#Création de la base de données pour Keystone:
+CREATE DATABASE keystonedb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON keystonedb.* TO 'keystone'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON keystonedb.* TO 'keystone'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Cinder:
+CREATE DATABASE cinderdb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON cinderdb.* TO 'cinder'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON cinderdb.* TO 'cinder'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Glance:
+CREATE DATABASE glancedb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON glancedb.* TO 'glance'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON glancedb.* TO 'glance'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Nova, nova_api et nova_cell0:
+CREATE DATABASE nova CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY 'PWDGOP';
+
+CREATE DATABASE nova_api CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'%' IDENTIFIED BY 'PWDGOP';
+
+CREATE DATABASE nova_cell0 CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Neutron:
+CREATE DATABASE neutrondb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON neutrondb.* TO 'neutron'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON neutrondb.* TO 'neutron'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Manila
+CREATE DATABASE maniladb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON maniladb.* TO 'manila'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON maniladb.* TO 'manila'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Heat:
+CREATE DATABASE heatdb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON heatdb.* TO 'heat'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON heatdb.* TO 'heat'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Magnum:
+CREATE DATABASE magnumdb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON magnumdb.* TO 'magnum'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON magnumdb.* TO 'magnum'@'%' IDENTIFIED BY 'PWDGOP';
+
+#Création de la base de données pour Gnocchi (Ceilometer):
+CREATE DATABASE gnocchidb CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON gnocchidb.* TO 'gnocchi'@'localhost' IDENTIFIED BY 'PWDGOP';
+GRANT ALL PRIVILEGES ON gnocchidb.* TO 'gnocchi'@'%' IDENTIFIED BY 'PWDGOP';
+
+
+FLUSH PRIVILEGEs;
+
+EXIT;

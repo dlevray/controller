@@ -1,0 +1,6 @@
+DEVICE=br-ex
+TYPE=Bridge
+DEVICETYPE=ovs
+ONBOOT=yes
+NM_CONTROLLED=no
+BOOTPROTO=none

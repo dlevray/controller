@@ -1,0 +1,90 @@
+##### INIT OPENSTACK ####
+controller::manage_install: true
+controller::package_repo: ['epel-release', 'centos-release-openstack-stein']
+controller::package_openstack: ['yum-plugin-priorities', 'python-openstackclient', 'openstack-selinux']
+controller::file_br_ex: '/etc/sysconfig/network-scripts/ifcfg-br-ex'
+controller::file_br_mgt: '/etc/sysconfig/network-scripts/ifcfg-br-mgt'
+
+######### CHRONY ########
+controller::manage_chrony: true
+controller::package_chrony: ['chrony']
+controller::file_chrony: '/etc/chrony.conf'
+controller::service_chrony: ['chronyd']
+controller::chrony_server: 'server 0.centos.pool.ntp.org iburst' #For compute need server name Controller
+controller::chrony_allow: '10.0.0.0/24'
+#Check configuration:   chronyc sources
+
+######### MONGODB ########
+controller::manage_mongodb: true
+controller::package_mongodb: ['mongodb-server', 'mongodb']
+controller::service_mongodb: ['mongod']
+controller::file_mongodb: '/etc/mongod.conf'
+
+######### MARIADB ########
+controller::manage_mariadb: true
+controller::package_mariadb: ['mariadb', 'mariadb-server', 'python2-PyMySQL']
+controller::file_mariadb: '/etc/my.cnf.d/openstack.cnf'
+controller::service_mariadb: ['mariadb']
+
+######### RABBITMQ #######
+controller::manage_rabbitmq: true
+controller::package_rabbitmq: ['rabbitmq-server']
+controller::file_rabbitmq: '/etc/rabbitmq/rabbitmq.config'
+controller::service_rabbitmq: ['rabbitmq-server']
+
+######### MEMCACHED #######
+controller::manage_memcached: true
+controller::package_memcached: ['memcached', 'python-memcached']
+controller::file_memcached: '/etc/sysconfig/memcached'
+controller::service_memcached: ['memcached']
+
+########### ETCD #########
+controller::manage_etcd: true
+controller::package_etcd: ['etcd']
+controller::file_etcd: '/etc/etcd/etcd.conf'
+controller::service_etcd: ['etcd']
+controller::listen_peer_urls: 'http://10.0.0.1:2380'
+controller::listen_client_urls: 'http://10.0.0.1:2379'
+controller::advertise_peer_urls: 'http://10.0.0.1:2380'
+controller::advertise_client_urls: 'http://10.0.0.1:2379'
+controller::initial_cluster: 'controller=http://10.0.0.1:2380'
+
+######### KEYSTONE #######
+controller::manage_keystone: true
+controller::package_keystone: ['openstack-keystone', 'httpd', 'mod_wsgi']
+controller::service_keystone: [httpd']
+controller::file_keystone: '/etc/keystone/keystone.conf'
+controller::file_httpd: '/etc/httpd/conf/httpd.conf'
+controller::file_admin_openrc: '/root/admin-openrc.erb'
+controller::file_install_keystone: '/root/install_keystone.sh'
+
+######### GLANCE ########
+controller::package_glance: ['openstack-glance']
+controller::file_glance_api: '/etc/glance/glance-api.conf'
+controller::file_glance_registry: '/etc/glance/glance-registry.conf'
+controller::service_glance: ['openstack-glance-api', 'openstack-glance-registry']
+
+#### NOVA CONTROLLER ####
+controller::package_nova_controller: [
+'openstack-nova-api',
+'openstack-nova-conductor',
+'openstack-nova-console',
+'openstack-nova-novncproxy',
+'openstack-nova-scheduler',
+'openstack-nova-placement-api',
+]
+controller::service_nova_controller: [
+'openstack-nova-api',
+'openstack-nova-consoleauth',
+'openstack-nova-scheduler',
+'openstack-nova-conductor',
+'openstack-nova-novncproxy',
+]
+controller::file_nova_controller: '/etc/nova/nova.conf'
+controller::file_nova_placement: '/etc/httpd/conf.d/00-nova-placement-api.conf'
+controller::nova_controller_myip: '10.0.0.100'
+
+######### HORIZON ########
+controller::package_horizon: ['openstack-dashboard']
+controller::file_horizon: '/etc/httpd/conf.d/openstack-dashboard.conf'
+controller::file_horizon_setting: '/etc/openstack-dashboard/local_settings'

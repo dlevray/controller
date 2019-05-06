@@ -1,0 +1,122 @@
+#! /bin/bash
+
+source /root/admin-openrc.sh
+openstack token issue
+
+#Un compte service est nécessaire pour les opérations qui sont réalisées entre les services d’Openstack
+openstack project create --domain default --description "Service Project" service
+
+#Créer le projet Glance
+openstack user create --domain default --password PWDGOP glance 
+openstack role add --project service --user glance admin
+openstack service create --name glance --description "OpenStack Image service" image
+openstack endpoint create --region RegionOne image public http://controller:9292
+openstack endpoint create --region RegionOne image internal http://controller:9292
+openstack endpoint create --region RegionOne image admin http://controller:9292
+
+#Créer le projet SWIFT
+openstack user create --domain default --password PWDGOP swift
+openstack role add --project service --user swift admin
+openstack service create --name swift --description "OpenStack Object Storage" object-store
+openstack endpoint create --region RegionOne object-store public http://controller:8080/v1/AUTH_%\(project_id\)s
+openstack endpoint create --region RegionOne object-store internal http://controller:8080/v1/AUTH_%\(project_id\)s
+#openstack endpoint create --region RegionOne object-store admin http://controller:8080/v1/AUTH_%\(project_id\)s
+openstack endpoint create --region RegionOne object-store admin http://controller:8080/v1
+
+#Créer le projet Nova
+openstack user create --domain default --password PWDGOP nova
+openstack role add --project service --user nova admin
+openstack service create --name nova --description "OpenStack Compute" compute
+openstack endpoint create --region RegionOne   compute public http://controller:8774/v2.1
+openstack endpoint create --region RegionOne   compute internal http://controller:8774/v2.1
+openstack endpoint create --region RegionOne  compute admin http://controller:8774/v2.1
+
+#Create a Placement service user using your chosen PLACEMENT_PASS:
+openstack user create --domain default --password PWDGOP placement
+openstack role add --project service --user placement admin
+openstack service create --name placement --description "Placement API" placement
+openstack endpoint create --region RegionOne placement public http://controller:8778
+openstack endpoint create --region RegionOne placement internal http://controller:8778
+openstack endpoint create --region RegionOne placement admin http://controller:8778
+
+
+#Créer le projet Cinder (stockage block). Les services de stockage de bloc requièrent deux entités de service (v2 et v3).
+openstack user create --domain default --password PWDGOP cinder
+openstack role add --project service --user cinder admin
+
+openstack service create --name cinderv2 --description "cinder volumes block v2" volumev2
+openstack endpoint create --region RegionOne volume2 public http://block:8776/v2/%\(project_id\)s
+openstack endpoint create --region RegionOne volume2 internal http://block:8776/v2/%\(project_id\)s
+openstack endpoint create --region RegionOne volume2 admin http://block:8776/v2/%\(project_id\)s
+
+openstack service create --name cinderv3 --description "cinder volumes block v3" volumev3
+openstack endpoint create --region RegionOne volume3 public http://block:8776/v3/%\(project_id\)s
+openstack endpoint create --region RegionOne volume3 internal http://block:8776/v3/%\(project_id\)s
+openstack endpoint create --region RegionOne volume3 admin http://block:8776/v3/%\(project_id\)s
+
+
+
+#Créer le projet Neutron (ATTENTION: SPECIFIER L'URL DU SERVEUR NEUTRON)
+openstack user create --domain default --password PWDGOP neutron
+openstack role add --project service --user neutron admin
+openstack service create --name neutron --description "OpenStack Networking" network
+openstack endpoint create --region RegionOne network public http://network:9696
+openstack endpoint create --region RegionOne network internal http://network:9696
+openstack endpoint create --region RegionOne network admin http://network:9696
+
+
+#Créer le projet Manila :
+openstack user create --domain default --password PWDGOP manila
+openstack role add --project service --user manila admin
+openstack service create --name manila --description "OpenStack Shared File Systems" share
+openstack service create --name manilav2 --description "OpenStack Shared File Systems" sharev2
+openstack endpoint create --region RegionOne share public http://controller:8786/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne share internal http://controller:8786/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne share admin http://controller:8786/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne sharev2 public http://controller:8786/v2/%\(tenant_id\)s
+openstack endpoint create --region RegionOne sharev2 internal http://controller:8786/v2/%\(tenant_id\)s
+openstack endpoint create --region RegionOne sharev2 admin http://controller:8786/v2/%\(tenant_id\)s
+
+
+
+#Créer le projet Heat:
+openstack user create --domain default --password PWDGOP heat
+openstack role add --project service --user heat admin
+openstack service create --name heat --description "Orchestration" orchestration
+openstack service create --name heat-cfn --description "Orchestration"  cloudformation
+openstack endpoint create --region RegionOne orchestration public http://controller:8004/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne orchestration internal http://controller:8004/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne orchestration admin http://controller:8004/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne cloudformation public http://controller:8000/v1
+openstack endpoint create --region RegionOne cloudformation internal http://controller:8000/v1
+openstack endpoint create --region RegionOne cloudformation admin http://controller:8000/v1
+
+openstack domain create --description "Stack projects and users" heat
+openstack user create --domain heat --password PWDGOP heat_domain_admin
+openstack role add --domain heat --user-domain heat --user heat_domain_admin admin
+openstack role create heat_stack_owner
+openstack role create heat_stack_user
+#openstack role add --project demo --user demo heat_stack_owner
+
+
+#Créer le projet Magnum:
+openstack user create --domain default --password PWDGOP magnum
+openstack role add --project service --user magnum admin
+openstack service create --name magnum --description "OpenStack Container Infrastructure" container-infra
+openstack endpoint create --region RegionOne container-infra public http://controller:9511/v1
+openstack endpoint create --region RegionOne container-infra internal http://controller:9511/v1
+openstack endpoint create --region RegionOne container-infra admin http://controller:9511/v1
+openstack domain create --description "Owns users and projects created by magnum" magnum
+openstack user create --domain magnum --password PWDGOP magnum_domain_admin
+openstack role add --domain magnum --user-domain magnum --user magnum_domain_admin admin
+
+
+#Créer le projet Ceilometer :
+openstack user create --domain default --password PWDGOP ceilometer
+openstack role add --project service --user ceilometer admin
+openstack user create --domain default --password PWDGOP gnocchi
+openstack service create --name gnocchi   --description "Metric Service" metric
+openstack role add --project service --user gnocchi admin
+openstack endpoint create --region RegionOne   metric public http://controller:8041
+openstack endpoint create --region RegionOne   metric internal http://controller:8041
+openstack endpoint create --region RegionOne   metric admin http://controller:8041
